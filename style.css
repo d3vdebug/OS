@@ -1,0 +1,586 @@
+/* --- THEME VARIABLES --- */
+        :root {
+            --bg-color: #0d110d;
+            --primary-color: #00FF41;
+            --primary-color-dark: #004d00;
+            --primary-color-darker: #0d360d;
+            --primary-color-glow: rgba(0, 255, 65, 0.3);
+            --primary-color-highlight: rgba(0, 255, 65, 0.2);
+            --text-color-dim: #00CC33;
+            --accent-color: #00FFFF; /* Cyan */
+            --danger-color: #FF4500; /* Orange-Red */
+        }
+
+        /* Set font and ensure the body covers the entire viewport */
+        body {
+            /* Hacker Aesthetic: Monospace font, dark background, neon text */
+            font-family: 'Consolas', 'Monospace', monospace; 
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            overflow: hidden; /* Prevent scrolling of the desktop */
+        }
+
+        /* Styling for the draggable/resizable window (Hacker Look) */
+        .window {
+            min-width: 200px;
+            min-height: 150px;
+            position: absolute;
+            top: 10vh;
+            left: 15vw;
+            
+            /* High-contrast terminal look */
+            background-color: rgba(0, 0, 0, 0.95);
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 0 10px var(--primary-color-glow);
+            border-radius: 0; /* Blocky corners */
+            
+            display: flex;
+            flex-direction: column;
+            /* resize: both; // Removed as we use a custom handle */
+            overflow: hidden;
+        }
+
+        /* Custom grab handle for resizing from the bottom-right corner */
+        .resize-handle {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            bottom: 0;
+            right: 0;
+            cursor: nwse-resize;
+            z-index: 10;
+            background-color: var(--primary-color); 
+        }
+
+        .title-bar {
+            cursor: grab;
+            user-select: none;
+            flex-shrink: 0;
+            background-color: var(--primary-color-dark); 
+            color: var(--primary-color);
+            border-bottom: 1px solid var(--primary-color);
+        }
+
+        .window-content {
+            flex-grow: 1; 
+            overflow: auto;
+            background-color: #000000; 
+            color: var(--primary-color);
+        }
+        
+        /* New simplified styles for desktop icons */
+        .desktop-icon {
+            position: absolute; 
+            cursor: default; /* Changed cursor to default as single click no longer opens */
+            user-select: none;
+            transition: background-color 0.1s ease-in-out;
+            z-index: 5;
+            color: var(--primary-color);
+            border: 1px solid transparent; /* Simple transparent border for hover effect */
+            border-radius: 0.25rem; 
+        }
+
+        /* Styling for the lucide icon SVG element */
+        .desktop-icon svg {
+            width: 36px;
+            height: 36px;
+            stroke-width: 2.5; /* Slightly thicker stroke for visibility */
+        }
+
+        .desktop-icon:hover {
+            background-color: var(--primary-color-highlight);
+            border: 1px solid var(--primary-color);
+        }
+        
+        /* --- NEW: Pixelr App Styles --- */
+        .pixelr-tool {
+            border: 2px solid var(--primary-color-dark);
+            transition: background-color 0.2s;
+        }
+        .pixelr-tool.active, .pixelr-tool:hover {
+            background-color: var(--primary-color-dark);
+            border-color: var(--primary-color);
+        }
+        .color-swatch {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.2s;
+        }
+        .color-swatch.active, .color-swatch:hover {
+            border-color: var(--accent-color);
+            transform: scale(1.1);
+        }
+        #pixelr-canvas { image-rendering: pixelated; }
+
+        /* --- NEW: Map App (Leaflet) Styles --- */
+        /* NEW: Style for custom select layer control */
+        .leaflet-control-select-layers select {
+            
+            background-color: #000 !important;
+            color: var(--text-color-dim) !important;
+            border: 1px solid var(--primary-color-dark) !important;
+            padding: 0.5rem !important;
+            border-radius: 0.25rem !important;
+            text-align: center;
+            appearance: none;
+    
+
+        }
+        /* --- MINIMALIST: GeoSearch Control Styles --- */
+        .leaflet-control-geosearch {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+        
+        .leaflet-control-geosearch.bar {
+            transition: all 0.2s ease;
+        }
+        
+        /* Hide the search icon button - we'll use a cleaner approach */
+        .leaflet-control-geosearch a.glass {
+            display: none !important;
+        }
+        
+        /* Minimalist Search Form Container */
+        .leaflet-control-geosearch form {
+            background-color: rgba(0, 0, 0, 0.85) !important;
+            backdrop-filter: blur(8px) !important;
+            border: 1px solid var(--primary-color-dark) !important;
+            border-radius: 4px !important;
+            height: 36px !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            transition: all 0.2s ease !important;
+            box-shadow: none !important;
+            display: flex !important;
+            align-items: center !important;
+            min-width: 280px !important;
+        }
+        
+        .leaflet-control-geosearch.active form {
+            border-color: var(--primary-color) !important;
+            box-shadow: 0 0 0 1px var(--primary-color-glow) !important;
+        }
+        
+        /* Minimalist Search Input */
+        .leaflet-control-geosearch form input {
+            height: 36px !important;
+            padding: 0 12px !important;
+            background-color: transparent !important;
+            color: var(--primary-color) !important;
+            font-size: 0.875rem !important;
+            font-family: 'Consolas', 'Monospace', monospace !important;
+            border: none !important;
+            outline: none !important;
+            flex: 1 !important;
+            margin: 0 !important;
+        }
+        
+        .leaflet-control-geosearch form input::placeholder {
+            color: var(--text-color-dim) !important;
+            opacity: 0.5 !important;
+        }
+        
+        .leaflet-control-geosearch form input:focus {
+            color: var(--primary-color) !important;
+        }
+        
+        /* Minimalist Results Dropdown */
+        .leaflet-control-geosearch .results {
+            background-color: rgba(0, 0, 0, 0.95) !important;
+            backdrop-filter: blur(10px) !important;
+            border: 1px solid var(--primary-color-dark) !important;
+            border-top: none !important;
+            border-radius: 0 0 4px 4px !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+            max-height: 280px !important;
+            overflow-y: auto !important;
+            margin-top: -1px !important;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            z-index: 10000 !important;
+            position: absolute !important;
+            top: 100% !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+        }
+        
+        .leaflet-control-geosearch .results.active {
+            display: block !important;
+        }
+        
+        .leaflet-control-geosearch .results > * {
+            color: var(--text-color-dim) !important;
+            border-bottom: 1px solid rgba(0, 255, 65, 0.1) !important;
+            padding: 10px 12px !important;
+            transition: background-color 0.15s ease !important;
+            cursor: pointer !important;
+            font-size: 0.875rem !important;
+            display: block !important;
+        }
+        
+        .leaflet-control-geosearch .results > *:hover {
+            background-color: rgba(0, 255, 65, 0.1) !important;
+            color: var(--primary-color) !important;
+        }
+        
+        .leaflet-control-geosearch .results > *:last-child {
+            border-bottom: none !important;
+        }
+        
+        /* Ensure the form container allows results to show */
+        .leaflet-control-geosearch form {
+            position: relative !important;
+        }
+        
+        /* Fix for geosearch results container */
+        .leaflet-control-geosearch.bar .results {
+            position: absolute !important;
+            top: 100% !important;
+            left: 0 !important;
+            width: 100% !important;
+            z-index: 10000 !important;
+        }
+        
+        /* Ensure results are visible when they have content */
+        .leaflet-control-geosearch .results:not(:empty) {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        /* Fix for any nested result containers */
+        .leaflet-control-geosearch .results > div,
+        .leaflet-control-geosearch .results > a,
+        .leaflet-control-geosearch .results > button {
+            display: block !important;
+            width: 100% !important;
+            text-align: left !important;
+        }
+        
+        /* Ensure the control container doesn't clip results */
+        .leaflet-control-geosearch {
+            overflow: visible !important;
+        }
+        
+        .leaflet-control-geosearch.bar {
+            overflow: visible !important;
+        }
+        
+        /* Minimalist Clear Button */
+        .leaflet-control-geosearch button.reset {
+            background: transparent !important;
+            color: var(--text-color-dim) !important;
+            border: none !important;
+            padding: 0 8px !important;
+            margin: 0 !important;
+            cursor: pointer !important;
+            transition: color 0.15s ease !important;
+            font-size: 0.875rem !important;
+            height: 36px !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+        
+        .leaflet-control-geosearch button.reset:hover {
+            color: var(--primary-color) !important;
+        }
+        
+        /* Custom Search History - Minimalist */
+        .devdebug-search-history {
+            font-family: 'Consolas', 'Monospace', monospace;
+            background-color: rgba(0, 0, 0, 0.95) !important;
+            backdrop-filter: blur(10px) !important;
+            border: 1px solid var(--primary-color-dark) !important;
+            border-top: none !important;
+            border-radius: 0 0 4px 4px !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+        }
+        
+        .devdebug-history-title {
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.7rem;
+            padding: 8px 12px;
+            color: var(--text-color-dim);
+            opacity: 0.7;
+            border-bottom: 1px solid rgba(0, 255, 65, 0.1);
+        }
+        
+        .devdebug-history-item {
+            font-size: 0.875rem;
+            padding: 10px 12px;
+            color: var(--text-color-dim);
+            border-bottom: 1px solid rgba(0, 255, 65, 0.1);
+            transition: all 0.15s ease;
+        }
+        
+        .devdebug-history-item:hover {
+            background-color: rgba(0, 255, 65, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .devdebug-history-item:last-child {
+            border-bottom: none;
+        }
+        .leaflet-popup-content-wrapper, .leaflet-popup-tip { 
+            background-color: var(--primary-color-darker) !important; 
+            color: var(--text-color-dim) !important; 
+            border: 1px solid var(--primary-color-dark); 
+            border-radius: 0.25rem !important; 
+            box-shadow: 0 0 5px rgba(0, 255, 65, 0.2); 
+        }
+        .leaflet-popup-close-button { 
+            color: var(--primary-color) !important; 
+        }
+        /* NEW: Style for live coordinate display */
+        .leaflet-control-coordinates {
+            background-color: rgba(0, 0, 0, 0.9) !important;
+            border: 1px solid var(--primary-color-dark) !important;
+            color: var(--text-color-dim) !important;
+            padding: 2px 6px;
+            font-size: 0.75rem; /* text-xs */
+        }
+
+        /* Overriding close button style */
+        .close-btn {
+            background-color: transparent !important;
+            color: var(--primary-color) !important;
+            border: 1px solid var(--primary-color);
+        }
+        .close-btn:hover {
+            background-color: #FF0000 !important;
+            color: #FFF !important;
+        }
+        .minimize-btn {
+            background-color: transparent !important;
+            color: var(--primary-color) !important;
+            border: 1px solid var(--primary-color);
+        }
+        .minimize-btn:hover {
+            background-color: var(--primary-color-highlight) !important;
+        }
+        .maximize-btn {
+            background-color: transparent !important;
+            color: var(--primary-color) !important;
+            border: 1px solid var(--primary-color);
+        }
+        .maximize-btn:hover {
+            background-color: var(--primary-color-highlight) !important;
+        }
+        .window.maximized .resize-handle {
+            display: none;
+        }
+        
+        /* --- CUSTOM SCROLLBAR STYLES (The Fix) --- */
+        
+        /* Target all potential scrolling areas within the window (content and nested children) */
+        .window-content, 
+        #chat-area, 
+        #browser-content-area,
+        textarea,
+        #start-menu .overflow-y-auto {
+            /* Firefox Scrollbar Support */
+            scrollbar-color: var(--primary-color) #000000; /* thumb track */
+            scrollbar-width: thin;
+        }
+
+        /* Webkit (Chrome, Safari, Edge) Scrollbar Styles */
+        .window-content::-webkit-scrollbar,
+        #chat-area::-webkit-scrollbar,
+        #browser-content-area::-webkit-scrollbar,
+        textarea::-webkit-scrollbar,
+        #start-menu .overflow-y-auto::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        .window-content::-webkit-scrollbar-track,
+        #chat-area::-webkit-scrollbar-track,
+        #browser-content-area::-webkit-scrollbar-track,
+        textarea::-webkit-scrollbar-track,
+        #start-menu .overflow-y-auto::-webkit-scrollbar-track {
+            background: var(--primary-color-darker);
+            border-left: 1px solid var(--primary-color-dark);
+        }
+
+        .window-content::-webkit-scrollbar-thumb,
+        #chat-area::-webkit-scrollbar-thumb,
+        #browser-content-area::-webkit-scrollbar-thumb,
+        textarea::-webkit-scrollbar-thumb,
+        #start-menu .overflow-y-auto::-webkit-scrollbar-thumb {
+            background-color: var(--primary-color);
+            border: 1px solid var(--primary-color-dark);
+        }
+
+        .window-content::-webkit-scrollbar-thumb:hover,
+        #chat-area::-webkit-scrollbar-thumb:hover,
+        #browser-content-area::-webkit-scrollbar-thumb:hover,
+        textarea::-webkit-scrollbar-thumb:hover,
+        #start-menu .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+            background-color: var(--text-color-dim); 
+        }
+        /* --- END SCROLLBAR STYLES --- */
+
+        /* Styles specific to the Snake Game Canvas */
+        #snake-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+            position: relative;
+        }
+        #snake-canvas {
+            background-color: rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 0 20px var(--primary-color-glow), inset 0 0 20px rgba(0, 255, 65, 0.1);
+            image-rendering: pixelated; 
+            width: 400px;
+            height: 400px;
+            max-width: 95%;
+            max-height: 95%;
+            transition: box-shadow 0.3s ease;
+        }
+        #snake-canvas:hover {
+            box-shadow: 0 0 25px var(--primary-color-glow), inset 0 0 25px rgba(0, 255, 65, 0.15);
+        }
+        
+        /* Snake game status badge animations */
+        #game-status {
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+        
+        /* Snake game score display */
+        #snake-score {
+            transition: transform 0.2s ease;
+        }
+        #snake-score:empty::before {
+            content: '0';
+        }
+
+        /* Styles specific to the Tennis Game Canvas */
+        #tennis-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+        }
+        #pong-canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* --- NEW: Volume Slider Hover Effect --- */
+        #volume-slider {
+            width: 0;
+            opacity: 0;
+            transition: width 0.2s ease-out, opacity 0.2s ease-out, margin-left 0.2s ease-out;
+            margin-left: 0;
+        }
+        #volume-control-container:hover #volume-slider {
+            width: 80px; /* w-20 */
+            opacity: 1;
+            margin-left: 8px; /* space-x-2 */
+        }
+
+        /* --- NEW: Taskbar App Tray --- */
+        .taskbar-app-icon {
+            border-bottom: 2px solid transparent;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+        .taskbar-app-icon.active {
+            background-color: var(--primary-color-darker);
+            border-bottom-color: var(--primary-color);
+        }
+        .taskbar-app-icon:hover {
+            background-color: var(--primary-color-darker);
+            border-bottom-color: var(--primary-color);
+        }
+
+        /* --- NEW: Start Menu Styles --- */
+        #start-menu {
+            bottom: 40px; /* Height of the taskbar */
+            left: 16px; /* px-4 of the body */
+            width: 350px;
+            height: 500px;
+            background-color: rgba(15, 23, 42, 0.9); /* bg-slate-900 with opacity */
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--primary-color-dark);
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        .start-menu-item {
+            transition: background-color 0.15s ease-in-out;
+        }
+        .start-menu-item:hover {
+            background-color: var(--primary-color-highlight);
+        }
+        .start-menu-footer-btn {
+            transition: background-color 0.15s ease-in-out;
+        }
+        
+        /* --- NEW: Calendar Styles --- */
+        #calendar-popup {
+            bottom: 40px; /* Height of the taskbar */
+            right: 16px; /* px-4 of the body */
+            width: 300px;
+            background-color: rgba(15, 23, 42, 0.9); /* bg-slate-900 with opacity */
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--primary-color-dark);
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        .calendar-day {
+            transition: background-color 0.15s ease-in-out;
+        }
+        .calendar-day:hover {
+            background-color: var(--primary-color-highlight);
+        }
+        .calendar-day.today {
+            background-color: var(--primary-color-dark);
+            border: 1px solid var(--primary-color);
+        }
+
+        /* --- NEW: Auth Screen --- */
+        #auth-btn {
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        #auth-btn:hover {
+            background-color: transparent !important;
+            color: var(--primary-color) !important;
+        }
+
+        /* --- NEW: Blinking Cursor for Boot Sequence --- */
+        .blinking-cursor::after {
+            content: '_';
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        /* --- NEW: Settings App Styles --- */
+        .settings-tab-btn { display: flex; align-items: center; width: 100%; text-align: left; padding: 0.75rem 1rem; border-radius: 0.25rem; transition: background-color 0.2s, color 0.2s; border-left: 3px solid transparent; }
+        .settings-tab-btn:hover { background-color: rgba(255,255,255,0.05); }
+        .settings-tab-btn.active { background-color: var(--primary-color-dark); color: var(--primary-color); font-weight: bold; border-left-color: var(--primary-color); }
+        .settings-action-btn { background-color: var(--primary-color-dark); border: 1px solid var(--primary-color-dark); transition: background-color 0.2s; }
+        .settings-action-btn:hover { background-color: var(--primary-color-darker); border-color: var(--primary-color); }
+
+        /* --- NEW: Glitch Effect --- */
+        @keyframes glitch { 0%, 100% { transform: translate(0, 0); } 20% { transform: translate(-1px, 1px); } 40% { transform: translate(-1px, -1px); } 60% { transform: translate(1px, 1px); } 80% { transform: translate(1px, -1px); } }
+        .glitch-effect {
+            animation: glitch 0.2s infinite;
+            text-shadow: -2px 0 var(--danger-color), 2px 0 var(--accent-color);
+        }

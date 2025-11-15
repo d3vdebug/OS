@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS Desktop Simulation</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Lucide Icons for clean, simple visuals -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- NEW: Load Leaflet.js for the Map App -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- NEW: Load Leaflet Geocoder for search functionality -->
+    <!-- UPDATED: Using leaflet-geosearch for a better search experience -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch@3.11.0/dist/geosearch.css" />
+    <script src="https://unpkg.com/leaflet-geosearch@3.11.0/dist/geosearch.umd.js"></script>
+    
+
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    
+    <link rel="stylesheet" href="style.css">
+    <style>
+        
+
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden p-4">
+
+    <!-- BOOT SEQUENCE SCREEN -->
+    <div id="boot-screen" class="fixed inset-0 z-[3000] flex items-center justify-center bg-black p-4">
+        <pre id="boot-text" class="font-mono text-sm whitespace-pre-wrap" style="color: #FFF;"></pre>
+    </div>
+
+    <!-- AUTHENTICATION SCREEN -->
+    <div id="auth-screen" class="fixed inset-0 z-[2000] flex flex-col items-center justify-center p-4 hidden" style="background-color: var(--bg-color); opacity: 0; transition: opacity 0.5s ease-in;">
+        <!-- New Login Panel -->
+        <div class="w-full max-w-sm text-center" style="background-color: rgba(0,0,0,0.9); border: 2px solid var(--primary-color); box-shadow: 0 0 20px var(--primary-color-glow);">
+            <!-- Header -->
+            <div class="p-3" style="background-color: var(--primary-color-dark); border-bottom: 1px solid var(--primary-color);">
+                <h1 class="text-lg font-bold tracking-widest" style="color: var(--primary-color);">SYSTEM ACCESS</h1>
+            </div>
+            <!-- Body -->
+            <div class="p-8 flex flex-col items-center space-y-4">
+                <div class="w-24 h-24 flex items-center justify-center rounded-full" style="border: 3px solid var(--primary-color); background-color: #000;">
+                    <img src="me.png" alt="DevDebug Avatar" class="w-24 h-24 rounded-full">
+                </div>
+                <h2 class="text-2xl font-bold">DevDebug</h2>
+                <p class="text-sm" style="color: var(--text-color-dim);">Administrator</p>
+                <button id="auth-btn" class="w-full py-3 text-lg font-bold mt-4" style="background-color: var(--primary-color); color: #000; border: 2px solid var(--primary-color);">
+                GRANT ACCESS
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DESKTOP CONTAINER -->
+    <div id="desktop" class="h-full w-full relative hidden" style="background-color: var(--bg-color);">
+ 
+        <!-- ICONS -->
+        
+        <!-- Icon 1: Search -->
+        <div id="icon-browser" data-app-id="browser"
+             class="desktop-icon w-20 h-20 flex flex-col items-center justify-center p-1"
+             style="top: 420px; left: 20px;"
+             ondblclick="handleIconClick(this, 'browser')">
+            <i data-lucide="search"></i>
+            <span class="text-xs text-center mt-1">Search</span>
+        </div>
+        
+        <!-- Icon 2: Files -->
+        <div id="icon-files" data-app-id="files"
+             class="desktop-icon w-20 h-20 flex flex-col items-center justify-center p-1"
+             style="top: 120px; left: 20px;"
+             ondblclick="handleIconClick(this, 'files')">
+            <i data-lucide="folder-closed"></i>
+            <span class="text-xs text-center mt-1">My Files</span>
+        </div>
+        
+        <!-- Icon 3: Notes -->
+        <div id="icon-notes" data-app-id="notes"
+             class="desktop-icon w-20 h-20 flex flex-col items-center justify-center p-1"
+             style="top: 220px; left: 20px;"
+             ondblclick="handleIconClick(this, 'notes')">
+            <i data-lucide="sticky-note"></i>
+            <span class="text-xs text-center mt-1">Notepad</span>
+        </div>
+         
+        <!-- Icon 4: Mr. Robot -->
+        <div id="icon-robot" data-app-id="robot"
+             class="desktop-icon w-20 h-20 flex flex-col items-center justify-center p-1"
+             style="top: 320px; left: 20px;"
+             ondblclick="handleIconClick(this, 'robot')">
+            <i data-lucide="bot-message-square"></i>
+            <span class="text-xs text-center mt-1">Mr Robot</span>
+        </div>
+        
+        <!-- Icon 5: Snake Game -->
+        <div id="icon-snake" data-app-id="snake"
+             class="desktop-icon w-20 h-20 flex flex-col items-center justify-center p-1"
+             style="top: 20px; right: 20px;"
+             ondblclick="handleIconClick(this, 'snake')">
+            <i data-lucide="spline"></i>
+            <span class="text-xs text-center mt-1">Snake</span>
+        </div>
+
+        <!-- Icon 7: Encryptr (Moved up from 620px to 520px) -->
+        <div id="icon-crypto-utility" data-app-id="crypto-utility"
+             class="desktop-icon w-20 h-20 flex flex-col items-center justify-center p-1"
+             style="top: 520px; left: 20px;"
+             ondblclick="handleIconClick(this, 'crypto-utility')">
+            <i data-lucide="lock-open"></i>
+            <span class="text-xs text-center mt-1">Encryptr</span>
+        </div>
+
+        <!-- Icon 8: SysMon (Process Explorer) -->
+        <div id="icon-sysmon" data-app-id="sysmon"
+             class="desktop-icon w-20 h-20 flex flex-col items-center justify-center p-1"
+             style="top: 20px; left: 120px;"
+             ondblclick="handleIconClick(this, 'sysmon')">
+            <i data-lucide="activity"></i>
+            <span class="text-xs text-center mt-1">Processes</span>
+        </div>
+
+        <!-- Icon 9: Settings -->
+        <div id="icon-settings" data-app-id="settings"
+             class="desktop-icon w-20 h-20 flex flex-col items-center justify-center p-1"
+             style="top: 120px; left: 120px;"
+             ondblclick="handleIconClick(this, 'settings')">
+            <i data-lucide="settings"></i>
+            <span class="text-xs text-center mt-1">Settings</span>
+        </div>
+
+        <!-- Icon 10: Terminal Tennis (Pong) Game -->
+        <div id="icon-terminal-tennis" data-app-id="terminal-tennis"
+             class="desktop-icon w-20 h-20 flex flex-col items-center justify-center p-1"
+             style="top: 120px; right: 20px;"
+             ondblclick="handleIconClick(this, 'terminal-tennis')">
+            <i data-lucide="minus"></i>
+            <span class="text-xs text-center mt-1">Tennis</span>
+        </div>
+
+        <!-- NEW Icon: Terminal -->
+        <div id="icon-terminal" data-app-id="terminal"
+             class="desktop-icon w-20 h-20 flex flex-col items-center justify-center p-1"
+             style="top: 220px; left: 120px;"
+             ondblclick="handleIconClick(this, 'terminal')">
+            <i data-lucide="terminal"></i>
+            <span class="text-xs text-center mt-1">Terminal</span>
+        </div>
+
+        <!-- Icon: Bin -->
+        <div id="icon-bin" data-app-id="bin"
+             class="desktop-icon w-20 h-20 flex flex-col items-center justify-center p-1"
+             style="position: absolute; bottom: 40px; right: 0px;"
+             ondblclick="handleIconClick(this, 'bin')">
+            <i data-lucide="trash"></i>
+            <span class="text-xs text-center mt-1">Bin</span>
+        </div>
+
+        <!-- NEW Icon: DevDebug Profile -->
+        <div id="icon-devdebug-profile" data-app-id="devdebug-profile"
+             class="desktop-icon w-20 h-20 flex flex-col items-center justify-center p-1"
+             style="top: 20px; left: 20px;"
+             ondblclick="handleIconClick(this, 'devdebug-profile')">
+            <i data-lucide="user"></i>
+            <span class="text-xs text-center mt-1">DevDebug</span>
+        </div>
+
+        <!-- NEW Icon: Pixelr -->
+        <div id="icon-pixelr" data-app-id="pixelr"
+             class="desktop-icon w-20 h-20 flex flex-col items-center justify-center p-1"
+             style="top: 220px; right: 20px;"
+             ondblclick="handleIconClick(this, 'pixelr')">
+            <i data-lucide="paintbrush"></i>
+            <span class="text-xs text-center mt-1">Pixelr</span>
+        </div>
+
+        <!-- NEW Icon: Map -->
+        <div id="icon-map" data-app-id="map"
+             class="desktop-icon w-20 h-20 flex flex-col items-center justify-center p-1"
+             style="top: 320px; right: 20px;"
+             ondblclick="handleIconClick(this, 'map')">
+            <i data-lucide="map"></i>
+            <span class="text-xs text-center mt-1">Map</span>
+        </div>
+
+    </div>
+
+    <!-- Background Music -->
+    <audio id="background-music" loop>
+        <!-- Royalty-free "hacker" themed music -->
+        <source src="theme.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Hover Sound -->
+    <audio id="hover-sound" preload="auto">
+        <source src="hover.wav" type="audio/wav">
+    </audio>
+
+    <!-- Click Sound -->
+    <audio id="click-sound" preload="auto">
+        <source src="click-st.wav" type="audio/wav">
+    </audio>
+
+    <!-- TASKBAR (Bottom - UPDATED FOR DEVDEBUG OS) -->
+    <div id="taskbar" class="fixed bottom-0 left-0 right-0 h-10 bg-black border-t-2 z-50 flex items-center justify-between px-4 shadow-2xl hidden" style="border-color: var(--primary-color);">
+        <div class="flex items-center h-full space-x-2">
+            <button id="start-btn" title="Start" class="h-full px-3 transition-colors hover:bg-gray-900">
+                <i data-lucide="aperture"></i>
+            </button>
+            <span class="text-sm font-bold tracking-widest" style="color: var(--primary-color);">DEVDEBUG OS</span>
+        </div>
+
+        <!-- App Tray for Open Windows -->
+        <div id="app-tray" class="flex-grow flex items-center justify-center h-full px-4 space-x-1">
+            <!-- Open app icons will be injected here -->
+        </div>
+
+        <div id="system-tray" class="flex items-center h-full px-2 space-x-4 cursor-pointer">
+            <div id="volume-control-container" class="flex items-center h-full">
+                <button id="music-mute-btn" title="Mute/Unmute" class="transition-opacity hover:opacity-75 p-1"></button>
+                <input type="range" id="volume-slider" min="0" max="1" step="0.01" class="h-1.5 rounded-lg appearance-none cursor-pointer" style="background-color: var(--primary-color-dark);">
+            </div>
+            <div class="text-xs text-right leading-tight" style="color: var(--text-color-dim);">
+                <span id="current-time-display" class="block"></span>
+                <span id="current-date-display" class="block"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Right-Click Context Menu -->
+    <div id="context-menu" class="hidden absolute z-[1000] p-1" style="background-color: var(--primary-color-darker); border: 1px solid var(--primary-color);">
+        <ul id="context-menu-items">
+            <!-- Items will be injected by JS -->
+        </ul>
+    </div>
+
+    <!-- Start Menu -->
+    <div id="start-menu" class="hidden absolute z-[900] flex flex-col">
+        <!-- App List -->
+        <div class="flex-grow p-2 overflow-y-auto">
+            <h3 class="p-2 text-sm font-bold" style="color: var(--text-color-dim);">All Apps</h3>
+            <ul id="start-menu-apps" class="space-y-1">
+                <!-- Apps will be injected here -->
+            </ul>
+        </div>
+        <!-- Footer -->
+        <div class="flex-shrink-0 p-2 flex justify-between items-center" style="background-color: rgba(0,0,0,0.3); border-top: 1px solid var(--primary-color-dark);">
+            <div id="start-menu-profile-btn" class="flex items-center space-x-3 p-2 rounded start-menu-item cursor-pointer">
+                <i data-lucide="user-circle" class="w-8 h-8"></i>
+                <span class="font-bold">DevDebug</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button id="start-menu-restart" title="Restart" class="p-2 rounded start-menu-footer-btn hover:bg-gray-700"><i data-lucide="rotate-ccw" class="w-5 h-5"></i></button>
+                <button id="start-menu-shutdown" title="Shutdown" class="p-2 rounded start-menu-footer-btn hover:bg-red-900"><i data-lucide="power" class="w-5 h-5"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Calendar Popup -->
+    <div id="calendar-popup" class="hidden absolute z-[900] flex flex-col">
+        <!-- Calendar Header -->
+        <div class="flex justify-between items-center p-2" style="border-bottom: 1px solid var(--primary-color-dark);">
+            <button id="calendar-prev-month" title="Previous Month" class="p-1 rounded start-menu-footer-btn hover:bg-gray-700"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
+            <div id="calendar-month-year" class="font-bold"></div>
+            <button id="calendar-next-month" title="Next Month" class="p-1 rounded start-menu-footer-btn hover:bg-gray-700"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
+        </div>
+        <!-- Calendar Body -->
+        <div id="calendar-body" class="grid grid-cols-7 text-center p-2 gap-1">
+            <!-- Day headers and dates will be injected here -->
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
+                    
